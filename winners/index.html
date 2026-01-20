@@ -116,49 +116,51 @@
     </div>
 
     <script>
-        document.getElementById('marwaForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const btn = document.getElementById('submitBtn');
-            btn.disabled = true;
-            btn.innerText = "Envoi en cours...";
+       document.getElementById('marwaForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.innerText = "Envoi en cours...";
 
-            // --- STARS PARTY EXPLOSION ---
-            var duration = 3 * 1000;
-            var end = Date.now() + duration;
+    // 1. Trigger the Star Explosion
+    confetti({
+        particleCount: 150,
+        spread: 70,
+        origin: { y: 0.6 },
+        shapes: ['star']
+    });
 
-            (function frame() {
-                confetti({
-                    particleCount: 3,
-                    angle: 60,
-                    spread: 55,
-                    origin: { x: 0 },
-                    shapes: ['star'],
-                    colors: ['#ffffff', '#FFE119', '#FFD700']
-                });
-                confetti({
-                    particleCount: 3,
-                    angle: 120,
-                    spread: 55,
-                    origin: { x: 1 },
-                    shapes: ['star'],
-                    colors: ['#ffffff', '#FFE119', '#FFD700']
-                });
+    // 2. Prepare Data
+    const formData = new FormData(this);
+    const data = {
+        firstName: formData.get('firstName'),
+        lastName: formData.get('lastName'),
+        facebook: formData.get('facebook'),
+        instagram: formData.get('instagram')
+    };
 
-                if (Date.now() < end) {
-                    requestAnimationFrame(frame);
-                }
-            }());
+    // 3. Send to your Google Script URL
+    // REPLACE THE URL BELOW WITH YOUR ACTUAL GOOGLE EXEC URL
+    const scriptURL = 'https://script.google.com/macros/s/YOUR_ACTUAL_EXEC_ID/exec';
 
-            // --- SEND DATA TO GOOGLE SHEETS ---
-            google.script.run.withSuccessHandler(function() {
-                alert("Données envoyées avec succès !");
-                document.getElementById('marwaForm').reset();
-                btn.disabled = false;
-                btn.innerText = "Envoyer";
-            }).processForm(this);
-        });
+    fetch(scriptURL, {
+        method: 'POST',
+        mode: 'no-cors', // Important for Google Script
+        cache: 'no-cache',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+    })
+    .then(() => {
+        alert("Success! Your data is saved.");
+        document.getElementById('marwaForm').reset();
+        btn.disabled = false;
+        btn.innerText = "Envoyer";
+    })
+    .catch(error => console.error('Error!', error.message));
+});
     </script>
 
 </body>
 
 </html>
+
