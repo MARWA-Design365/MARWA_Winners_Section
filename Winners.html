@@ -82,7 +82,12 @@
         <h1>MARWA</h1>
         <p class="description">Veuillez remplir les informations ci-dessous pour continuer.</p>
     </div>
+<p id="currentDate" style="color: #888; font-size: 0.8rem;"></p>
 
+<script>
+  // This automatically displays today's date on the form
+  document.getElementById('currentDate').innerText = "Date: " + new Date().toLocaleDateString('fr-FR');
+</script>
     <div class="form-card">
         <form id="marwaForm">
             <div class="input-group">
@@ -165,3 +170,4 @@
 </body>
 
 </html>
+
